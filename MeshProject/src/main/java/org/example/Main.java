@@ -1,5 +1,6 @@
 package org.example;
 
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
@@ -19,9 +20,11 @@ public class Main {
 
         try {
 
-            var url = Main.class.getClassLoader().getResource("example.json");
-            // new File
-            JsonData json = objectMapper.readValue(url, JsonData.class);
+            var resource = Main.class.getClassLoader().getResource(args[0]);
+            // TODO use final version.
+//            var resource = new File(args[0]);
+
+            JsonData json = objectMapper.readValue(resource, JsonData.class);
 
 
             Element myElement[] = json.getElements();
@@ -111,8 +114,8 @@ public class Main {
         Collections.sort(combinedElements, (ce1, ce2) -> Double.compare(ce2.getMyValues(), ce1.getMyValues()));
 
         System.out.println("[");
-        for(CombinedElement obj:combinedElements){
-            System.out.println("{ element_id: "+obj.getElements().getId()+", value: "+obj.getMyValues()+"},");
+        for (CombinedElement obj : combinedElements) {
+            System.out.println("{ element_id: " + obj.getElements().getId() + ", value: " + obj.getMyValues() + "},");
         }
         System.out.println("]");
 
