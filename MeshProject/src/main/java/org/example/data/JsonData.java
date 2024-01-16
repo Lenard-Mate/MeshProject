@@ -6,39 +6,12 @@ import java.util.Arrays;
 
 public class JsonData {
 
-    private Element[] elements;
-    private Node[] nodes;
-    private Value[] values;
-
     @JsonProperty("elements")
-    public Element[] getElements() {
-        return elements;
-    }
-
-    @JsonProperty("elements")
-    public void setElements(Element[] elements) {
-        this.elements = elements;
-    }
-
+    public Element[] elements;
     @JsonProperty("nodes")
-    public Node[] getNodes() {
-        return nodes;
-    }
-
-    @JsonProperty("nodes")
-    public void setNodes(Node[] nodes) {
-        this.nodes = nodes;
-    }
-
+    public Node[] nodes;
     @JsonProperty("values")
-    public Value[] getValues() {
-        return values;
-    }
-
-    @JsonProperty("values")
-    public void setValues(Value[] values) {
-        this.values = values;
-    }
+    public Value[] values;
 
     @Override
     public String toString() {

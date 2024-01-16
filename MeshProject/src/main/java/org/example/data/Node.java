@@ -3,48 +3,12 @@ package org.example.data;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Node {
-    private int id;
-    private double x;
-    private double y;
-
-    public void setX(long x) {
-        this.x = x;
-    }
-
-    public void setY(long y) {
-        this.y = y;
-    }
-
-
     @JsonProperty("id")
-    public int getId() {
-        return id;
-    }
-
-    @JsonProperty("id")
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    public int id;
     @JsonProperty("x")
-    public double getX() {
-        return x;
-    }
-
-    @JsonProperty("x")
-    public void setX(double x) {
-        this.x = x;
-    }
-
+    public double x;
     @JsonProperty("y")
-    public double getY() {
-        return y;
-    }
-
-    @JsonProperty("y")
-    public void setY(double y) {
-        this.y = y;
-    }
+    public double y;
 
     @Override
     public String toString() {

@@ -27,9 +27,9 @@ public class Main {
             JsonData json = objectMapper.readValue(resource, JsonData.class);
 
 
-            Element myElement[] = json.getElements();
-            Node myNode[] = json.getNodes();
-            Value myValue[] = json.getValues();
+            Element[] myElement = json.elements;
+            Node[] myNode = json.nodes;
+            Value[] myValue = json.values;
 
             System.out.println(myValue[12]);
             meshProcess(myElement, myNode, myValue);
@@ -73,7 +73,7 @@ public class Main {
 
         for (int i = 0; i < elements.length; i++) {
 
-            if (values[i].getValue().compareTo(values[selectedElement.getId()].getValue()) > 0 &&
+            if (values[i].value.compareTo(values[selectedElement.id].value) > 0 &&
                     isNeighbour(selectedElement, elements[i])
             ) {
                 return null;
@@ -84,15 +84,15 @@ public class Main {
     }
 
     private static boolean isNeighbour(Element selectedElement, Element elements) {
-        return elements.getNodes().get(0).equals(selectedElement.getNodes().get(0)) ||
-                elements.getNodes().get(0).equals(selectedElement.getNodes().get(1)) ||
-                elements.getNodes().get(0).equals(selectedElement.getNodes().get(2)) ||
-                elements.getNodes().get(1).equals(selectedElement.getNodes().get(0)) ||
-                elements.getNodes().get(1).equals(selectedElement.getNodes().get(1)) ||
-                elements.getNodes().get(1).equals(selectedElement.getNodes().get(2)) ||
-                elements.getNodes().get(2).equals(selectedElement.getNodes().get(0)) ||
-                elements.getNodes().get(2).equals(selectedElement.getNodes().get(1)) ||
-                elements.getNodes().get(2).equals(selectedElement.getNodes().get(2));
+        return elements.nodes[0] == selectedElement.nodes[0] ||
+                elements.nodes[0] == selectedElement.nodes[1] ||
+                elements.nodes[0] == selectedElement.nodes[2] ||
+                elements.nodes[1] == selectedElement.nodes[0] ||
+                elements.nodes[1] == selectedElement.nodes[1] ||
+                elements.nodes[1] == selectedElement.nodes[2] ||
+                elements.nodes[2] == selectedElement.nodes[0] ||
+                elements.nodes[2] == selectedElement.nodes[1] ||
+                elements.nodes[2] == selectedElement.nodes[2];
     }
 
 
@@ -104,7 +104,7 @@ public class Main {
         for (int i = 0; i < localMaximaArray.toArray().length; i++) {
             CombinedElement combinedElement = new CombinedElement();
             combinedElement.setElements(localMaximaArray.get(i));
-            combinedElement.setMyValues(myValue[localMaximaArray.get(i).getId()].getValue());
+            combinedElement.setMyValues(myValue[localMaximaArray.get(i).id].value);
 
             combinedElements.add(combinedElement);
         }
@@ -116,7 +116,7 @@ public class Main {
 
         System.out.println("[");
         for (CombinedElement obj : combinedElements) {
-            System.out.println("{ element_id: " + obj.getElements().getId() + ", value: " + obj.getMyValues() + "},");
+            System.out.println("{ element_id: " + obj.getElements().id + ", value: " + obj.getMyValues() + "},");
         }
         System.out.println("]");
 
@@ -125,7 +125,7 @@ public class Main {
 
     public static Boolean areYouHaveNeighbourInList(List<CombinedElement> listOfElements, Element selectedElement) {
         for (int i = 0; i < listOfElements.toArray().length; i++) {
-            if (isNeighbour(listOfElements.get(i).getElements(), selectedElement) && listOfElements.get(i).getElements().getId() != selectedElement.getId()) {
+            if (isNeighbour(listOfElements.get(i).getElements(), selectedElement) && listOfElements.get(i).getElements().id != selectedElement.id) {
                 return true;
             }
         }

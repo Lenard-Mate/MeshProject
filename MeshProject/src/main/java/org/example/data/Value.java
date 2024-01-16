@@ -5,39 +5,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 
 public class Value {
-
-    private int element_id;
-    private BigDecimal value;
-
-
-    public int getElement_id() {
-        return element_id;
-    }
-
-    public void setElement_id(int element_id) {
-        this.element_id = element_id;
-    }
-
-
     @JsonProperty("element_id")
-    public int getElementId() {
-        return element_id;
-    }
-
-    @JsonProperty("element_id")
-    public void setElementId(int elementId) {
-        this.element_id = elementId;
-    }
-
-
-    public BigDecimal getValue() {
-        return value;
-    }
-
+    public int element_id;
     @JsonProperty("value")
-    public void setValue(BigDecimal value) {
-        this.value = value;
-    }
+    public BigDecimal value;
+
 
     @Override
     public String toString() {
