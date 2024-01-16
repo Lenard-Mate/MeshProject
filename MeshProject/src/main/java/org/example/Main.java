@@ -1,11 +1,12 @@
 package org.example;
 
-import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.example.data.*;
 
 
@@ -13,10 +14,9 @@ public class Main {
 
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(args));
-        long start = System.currentTimeMillis();
 
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
 
@@ -28,35 +28,21 @@ public class Main {
 
 
             Element[] myElement = json.elements;
-            Node[] myNode = json.nodes;
             Value[] myValue = json.values;
 
-            System.out.println(myValue[12]);
-            meshProcess(myElement, myNode, myValue);
+            writeOutput(processData(myElement, myValue));
 
-            BigDecimal jsonValue = new BigDecimal("15.7431295749031765");
-            BigDecimal comparisonValue = new BigDecimal("15.743129574903177");
-            int comparisonResult = jsonValue.compareTo(comparisonValue);
-
-            if (comparisonResult > 0) {
-                System.out.println("jsonValue is greater than comparisonValue");
-            } else if (comparisonResult < 0) {
-                System.out.println("jsonValue is less than comparisonValue");
-            } else {
-                System.out.println("jsonValue is equal to comparisonValue");
-            }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
 
-        long end = System.currentTimeMillis();
-        System.out.println(end - start + " ms");
+
     }
 
 
-    public static void meshProcess(Element[] elements, Node[] nodes, Value[] myValue) {
+    public static List<ElementWithHeight> processData(Element[] elements, Value[] myValue) {
         List<Element> localMaximaArray = new ArrayList<>();
         Element localMaxima;
         for (Element element : elements) {
@@ -66,7 +52,7 @@ public class Main {
             }
         }
 
-        sortListLocalMaxima(localMaximaArray, myValue);
+       return sortListLocalMaxima(localMaximaArray, myValue);
     }
 
     public static Element findAllLocalMaxima(Element selectedElement, Element[] elements, Value[] values) {
@@ -96,15 +82,15 @@ public class Main {
     }
 
 
-    public static void sortListLocalMaxima(List<Element> localMaximaArray, Value[] myValue) {
+    public static List<ElementWithHeight> sortListLocalMaxima(List<Element> localMaximaArray, Value[] myValue) {
 
 
-        List<CombinedElement> combinedElements = new ArrayList<>();
+        List<ElementWithHeight> combinedElements = new ArrayList<>();
 
         for (int i = 0; i < localMaximaArray.toArray().length; i++) {
-            CombinedElement combinedElement = new CombinedElement();
-            combinedElement.setElements(localMaximaArray.get(i));
-            combinedElement.setMyValues(myValue[localMaximaArray.get(i).id].value);
+            ElementWithHeight combinedElement = new ElementWithHeight();
+            combinedElement.setElement(localMaximaArray.get(i));
+            combinedElement.setHeight(myValue[localMaximaArray.get(i).id].value);
 
             combinedElements.add(combinedElement);
         }
@@ -114,34 +100,40 @@ public class Main {
 
         Collections.sort(combinedElements, Comparator.reverseOrder());
 
-        System.out.println("[");
-        for (CombinedElement obj : combinedElements) {
-            System.out.println("{ element_id: " + obj.getElements().id + ", value: " + obj.getMyValues() + "},");
-        }
-        System.out.println("]");
 
-
+      return combinedElements;
     }
 
-    public static Boolean areYouHaveNeighbourInList(List<CombinedElement> listOfElements, Element selectedElement) {
-        for (int i = 0; i < listOfElements.toArray().length; i++) {
-            if (isNeighbour(listOfElements.get(i).getElements(), selectedElement) && listOfElements.get(i).getElements().id != selectedElement.id) {
+    public static void writeOutput(List<ElementWithHeight> elementWithHeights){
+        StringBuilder sb = new StringBuilder();
+        sb.append('[').append(System.lineSeparator()).append("  ");
+        String delimiter = ","+System.lineSeparator()+"  ";
+        var joinedString = elementWithHeights.stream().map(Objects::toString).collect(Collectors.joining(delimiter));
+        sb.append(joinedString);
+        sb.append(System.lineSeparator()).append(']');
+        System.out.println(sb);
+    }
+
+    public static Boolean isNeighbourInList(List<ElementWithHeight> listOfElements, Element selectedElement) {
+        int elementSize = listOfElements.size();
+        for (int i = 0; i < elementSize; i++) {
+            if (isNeighbour(listOfElements.get(i).getElement(), selectedElement) && listOfElements.get(i).getElement().id != selectedElement.id) {
                 return true;
             }
         }
         return false;
     }
 
-    public static List<CombinedElement> localMaximaListWithoutMultiplePoints(List<CombinedElement> combinedElements) {
-        List<CombinedElement> newCombinedElements = new ArrayList<>();
-
-        for (int i = 0; i < combinedElements.toArray().length; i++) {
-            if (!areYouHaveNeighbourInList(newCombinedElements, combinedElements.get(i).getElements())) {
-                newCombinedElements.add(combinedElements.get(i));
+    public static List<ElementWithHeight> localMaximaListWithoutMultiplePoints(List<ElementWithHeight> combinedElements) {
+        List<ElementWithHeight> newElementWithHeights = new ArrayList<>();
+        int elementSize = combinedElements.size();
+        for (int i = 0; i < elementSize; i++) {
+            if (!isNeighbourInList(newElementWithHeights, combinedElements.get(i).getElement())) {
+                newElementWithHeights.add(combinedElements.get(i));
             }
         }
 
-        return newCombinedElements;
+        return newElementWithHeights;
     }
 
 }
