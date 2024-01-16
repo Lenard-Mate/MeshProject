@@ -1,11 +1,12 @@
 package org.example.data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-public class CombinedElement {
+public class CombinedElement implements Comparable<CombinedElement> {
     Element elements;
 
-    Double  myValues;
+    BigDecimal myValues;
 
     public Element getElements() {
         return elements;
@@ -15,22 +16,28 @@ public class CombinedElement {
         this.elements = elements;
     }
 
-    public Double getMyValues() {
+    public BigDecimal getMyValues() {
         return myValues;
     }
 
-    public void setMyValues(Double myValues) {
+    public void setMyValues(BigDecimal myValues) {
         this.myValues = myValues;
     }
 
     @Override
     public String toString() {
-        return "\n"+"CombinedElement{" +
+        return "\n" + "CombinedElement{" +
                 "elements=" + elements +
                 ", myValues=" + myValues +
                 '}';
     }
 
     public CombinedElement() {
+    }
+
+
+    @Override
+    public int compareTo(CombinedElement o) {
+        return this.myValues.compareTo(o.myValues);
     }
 }

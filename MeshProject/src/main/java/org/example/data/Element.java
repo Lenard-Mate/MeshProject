@@ -30,7 +30,7 @@ public class Element {
 
     @Override
     public String toString() {
-        return "\n"+"Element{" +
+        return "\n" + "Element{" +
                 "id=" + id +
                 ", nodes=" + nodes +
                 '}';

@@ -73,11 +73,12 @@ public class Main {
 
         for (int i = 0; i < elements.length; i++) {
 
-            if (values[i].getValue() > values[selectedElement.getId()].getValue() &&
+            if (values[i].getValue().compareTo(values[selectedElement.getId()].getValue()) > 0 &&
                     isNeighbour(selectedElement, elements[i])
             ) {
                 return null;
             }
+
         }
         return selectedElement;
     }
@@ -111,7 +112,7 @@ public class Main {
         combinedElements = localMaximaListWithoutMultiplePoints(combinedElements);
 
 
-        Collections.sort(combinedElements, (ce1, ce2) -> Double.compare(ce2.getMyValues(), ce1.getMyValues()));
+        Collections.sort(combinedElements, Comparator.reverseOrder());
 
         System.out.println("[");
         for (CombinedElement obj : combinedElements) {

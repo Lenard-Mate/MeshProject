@@ -2,10 +2,12 @@ package org.example.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
+
 public class Value {
 
     private int element_id;
-    private double value;
+    private BigDecimal value;
 
 
     public int getElement_id() {
@@ -27,13 +29,13 @@ public class Value {
         this.element_id = elementId;
     }
 
-    @JsonProperty("value")
-    public double getValue() {
+
+    public BigDecimal getValue() {
         return value;
     }
 
     @JsonProperty("value")
-    public void setValue(double value) {
+    public void setValue(BigDecimal value) {
         this.value = value;
     }
 
