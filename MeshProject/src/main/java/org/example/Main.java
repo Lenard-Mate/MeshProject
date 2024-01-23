@@ -1,17 +1,16 @@
 package org.example;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.example.data.*;
 
 
 public class Main {
-
 
     public static void main(String[] args) {
 
@@ -20,9 +19,9 @@ public class Main {
 
         try {
 
-            var resource = Main.class.getClassLoader().getResource(args[0]);
+//            var resource = Main.class.getClassLoader().getResource(args[0]);
             // TODO use final version.
-//            var resource = new File(args[0]);
+            var resource = new File(args[0]);
 
             JsonData json = objectMapper.readValue(resource, JsonData.class);
 
@@ -30,13 +29,12 @@ public class Main {
             Element[] myElement = json.elements;
             Value[] myValue = json.values;
 
-            writeOutput(processData(myElement, myValue));
+            writeOutput(processData(myElement, myValue),Long.parseLong(args[1]));
 
 
         } catch (IOException e) {
-            e.printStackTrace();
-        }
 
+        }
 
 
     }
@@ -97,18 +95,17 @@ public class Main {
 
         combinedElements = localMaximaListWithoutMultiplePoints(combinedElements);
 
-
         Collections.sort(combinedElements, Comparator.reverseOrder());
 
 
       return combinedElements;
     }
 
-    public static void writeOutput(List<ElementWithHeight> elementWithHeights){
+    public static void writeOutput(List<ElementWithHeight> elementWithHeights,long limit){
         StringBuilder sb = new StringBuilder();
         sb.append('[').append(System.lineSeparator()).append("  ");
         String delimiter = ","+System.lineSeparator()+"  ";
-        var joinedString = elementWithHeights.stream().map(Objects::toString).collect(Collectors.joining(delimiter));
+        var joinedString = elementWithHeights.stream().limit(limit).map(Objects::toString).collect(Collectors.joining(delimiter));
         sb.append(joinedString);
         sb.append(System.lineSeparator()).append(']');
         System.out.println(sb);
