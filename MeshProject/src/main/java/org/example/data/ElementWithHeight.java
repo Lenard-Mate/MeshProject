@@ -1,6 +1,7 @@
 package org.example.data;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 public class ElementWithHeight implements Comparable<ElementWithHeight> {
    private Element elements;

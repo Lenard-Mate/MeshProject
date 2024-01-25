@@ -14,14 +14,12 @@ public class Main {
 
 
     public static void main(String[] args) {
-
+        long start = System.currentTimeMillis();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
 
-//            var resource = Main.class.getClassLoader().getResource(args[0]);
-            // TODO use final version.
             var resource = new File(args[0]);
 
             JsonData json = objectMapper.readValue(resource, JsonData.class);
@@ -32,7 +30,8 @@ public class Main {
 
             writeOutput(processData(myElement, myValue),Long.parseLong(args[1]));
 
-
+            long end = System.currentTimeMillis();
+            System.err.println(end-start+" ms");
         } catch (IOException e) {
 
         }
@@ -51,7 +50,7 @@ public class Main {
             }
         }
 
-       return sortListLocalMaxima(localMaximaArray, myValue);
+       return  eliminateIllegalLocalMaxima(sortListLocalMaxima(localMaximaArray, myValue),elements,myValue);
     }
 
     public static Element findAllLocalMaxima(Element selectedElement, Element[] elements, Value[] values) {
@@ -96,7 +95,7 @@ public class Main {
 
         combinedElements = localMaximaListWithoutMultiplePoints(combinedElements);
 
-        Collections.sort(combinedElements, Comparator.reverseOrder());
+        combinedElements.sort(Comparator.reverseOrder());
 
 
       return combinedElements;
@@ -123,12 +122,96 @@ public class Main {
     }
 
     public static List<ElementWithHeight> localMaximaListWithoutMultiplePoints(List<ElementWithHeight> combinedElements) {
+
         List<ElementWithHeight> newElementWithHeights = new ArrayList<>();
+        List<ElementWithHeight> bannedList = new ArrayList<>();
         int elementSize = combinedElements.size();
         for (int i = 0; i < elementSize; i++) {
-            if (!isNeighbourInList(newElementWithHeights, combinedElements.get(i).getElement())) {
+            if (!isNeighbourInList(newElementWithHeights, combinedElements.get(i).getElement()) && isNeighbourInBannedList(combinedElements.get(i).getElement(), bannedList)) {
                 newElementWithHeights.add(combinedElements.get(i));
+                bannedList.addAll(findNeighbour(combinedElements.get(i), combinedElements));
+
+            } else {
+                bannedList.add(combinedElements.get(i));
             }
+        }
+
+        return newElementWithHeights;
+    }
+
+    public static boolean isNeighbourInBannedList(Element selectedElement, List<ElementWithHeight> bannedList) {
+        return !isNeighbourInList(bannedList, selectedElement);
+    }
+
+    public static List<ElementWithHeight> findNeighbour(ElementWithHeight selectedElement, List<ElementWithHeight> combinedElements) {
+        List<ElementWithHeight> allNeighbour = new ArrayList<>();
+        for (ElementWithHeight combinedElement : combinedElements) {
+            if (isNeighbour(selectedElement.getElement(), combinedElement.getElement())) {
+                allNeighbour.add(combinedElement);
+            }
+        }
+        return allNeighbour;
+    }
+
+
+    public static List<ElementWithHeight> findNeighbour(ElementWithHeight selectedElement, Element[] combinedElements,Value[] myValue) {
+        List<ElementWithHeight> allNeighbour = new ArrayList<>();
+        for (Element combinedElement : combinedElements) {
+            if (isNeighbour(selectedElement.getElement(), combinedElement) &&
+                    combinedElement.id!=selectedElement.getElement().id &&(
+                    myValue[combinedElement.id].value.compareTo(selectedElement.getHeight())>0 || myValue[combinedElement.id].value.compareTo(selectedElement.getHeight())==0
+                    )
+            ) {
+                ElementWithHeight newCombinedElement = new ElementWithHeight();
+                newCombinedElement.setElement(combinedElement);
+                newCombinedElement.setHeight(myValue[combinedElement.id].value);
+                allNeighbour.add(newCombinedElement);
+            }
+        }
+        return allNeighbour;
+    }
+
+    public static boolean checkForId(ElementWithHeight iteratedElement,List<ElementWithHeight> listOfElements){
+
+        for (ElementWithHeight listOfElement : listOfElements) {
+            if (iteratedElement.getElement().id == listOfElement.getElement().id) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean checkAllNeighbour(ElementWithHeight elementWithHeights,Element[] elements,Value[] myValue){
+        List<ElementWithHeight> aux = findNeighbour(elementWithHeights,elements,myValue);
+        List<ElementWithHeight> auxDouble = new ArrayList<>();
+
+
+        for (int i = 0; i < aux.size(); i++) {
+            auxDouble = findNeighbour(aux.get(i), elements, myValue);
+            for (int j = 0; j < auxDouble.size(); j++) {
+                if (!checkForId(auxDouble.get(j), aux)) {
+                    aux.add(auxDouble.get(j));
+                }
+
+            }
+        }
+
+        for(int i=0;i<aux.size();i++){
+            if(aux.get(i).getHeight().compareTo(elementWithHeights.getHeight())>0){
+                return false;
+            }
+        }
+
+      return true;
+    }
+
+    public static List<ElementWithHeight> eliminateIllegalLocalMaxima(List<ElementWithHeight> elementWithHeights,Element[] elements,Value[] myValue){
+        List<ElementWithHeight> newElementWithHeights = new ArrayList<>();
+        for (ElementWithHeight elementWithHeight : elementWithHeights) {
+         if(checkAllNeighbour(elementWithHeight, elements,myValue)){
+             newElementWithHeights.add(elementWithHeight);
+         }
         }
 
         return newElementWithHeights;
