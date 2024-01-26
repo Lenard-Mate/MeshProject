@@ -1,28 +1,18 @@
-package org.example.testDemo;
+package org.example;
 
 import org.example.data.Element;
 import org.example.data.ElementWithHeight;
-import org.example.data.Value;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.Main.*;
+import static org.example.Main.isNeighbour;
+import static org.example.Main.isNeighbourInList;
 
 
-public class Main {
-
-    private Demo subject;
-
-    @BeforeEach
-    public void beforeEach() {
-        this.subject = new Demo();
-    }
-
+public class MainTest {
 
     @Test
     public void testIsNeighbourTrue() {
@@ -200,4 +190,5 @@ public class Main {
 //        Assertions.assertEquals(1, 1);
 
     }
+
 }
