@@ -67,7 +67,7 @@ public class Main {
         return selectedElement;
     }
 
-    private static boolean isNeighbour(Element selectedElement, Element elements) {
+    public static boolean isNeighbour(Element selectedElement, Element elements) {
         return elements.nodes[0] == selectedElement.nodes[0] ||
                 elements.nodes[0] == selectedElement.nodes[1] ||
                 elements.nodes[0] == selectedElement.nodes[2] ||
@@ -101,7 +101,7 @@ public class Main {
       return combinedElements;
     }
 
-    public static void writeOutput(List<ElementWithHeight> elementWithHeights,long limit){
+    public static StringBuilder writeOutput(List<ElementWithHeight> elementWithHeights,long limit){
         StringBuilder sb = new StringBuilder();
         sb.append('[').append(System.lineSeparator()).append("  ");
         String delimiter = ","+System.lineSeparator()+"  ";
@@ -109,6 +109,7 @@ public class Main {
         sb.append(joinedString);
         sb.append(System.lineSeparator()).append(']');
         System.out.println(sb);
+        return sb;
     }
 
     public static Boolean isNeighbourInList(List<ElementWithHeight> listOfElements, Element selectedElement) {
