@@ -1,13 +1,16 @@
 package org.example;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.data.Element;
+import org.example.data.ElementWithHeight;
+import org.example.data.JsonData;
+import org.example.data.Value;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.data.*;
 
 
 public class Main {
@@ -28,10 +31,10 @@ public class Main {
             Element[] myElement = json.elements;
             Value[] myValue = json.values;
 
-            writeOutput(processData(myElement, myValue),Long.parseLong(args[1]));
+            writeOutput(processData(myElement, myValue), Long.parseLong(args[1]));
 
             long end = System.currentTimeMillis();
-            System.err.println(end-start+" ms");
+            System.err.println(end - start + " ms");
         } catch (IOException e) {
 
         }
@@ -50,7 +53,7 @@ public class Main {
             }
         }
 
-       return  eliminateIllegalLocalMaxima(sortListLocalMaxima(localMaximaArray, myValue),elements,myValue);
+        return eliminateIllegalLocalMaxima(sortListLocalMaxima(localMaximaArray, myValue), elements, myValue);
     }
 
     public static Element findAllLocalMaxima(Element selectedElement, Element[] elements, Value[] values) {
@@ -98,13 +101,13 @@ public class Main {
         combinedElements.sort(Comparator.reverseOrder());
 
 
-      return combinedElements;
+        return combinedElements;
     }
 
-    public static StringBuilder writeOutput(List<ElementWithHeight> elementWithHeights,long limit){
+    public static StringBuilder writeOutput(List<ElementWithHeight> elementWithHeights, long limit) {
         StringBuilder sb = new StringBuilder();
         sb.append('[').append(System.lineSeparator()).append("  ");
-        String delimiter = ","+System.lineSeparator()+"  ";
+        String delimiter = "," + System.lineSeparator() + "  ";
         var joinedString = elementWithHeights.stream().limit(limit).map(Objects::toString).collect(Collectors.joining(delimiter));
         sb.append(joinedString);
         sb.append(System.lineSeparator()).append(']');
@@ -155,13 +158,13 @@ public class Main {
     }
 
 
-    public static List<ElementWithHeight> findNeighbour(ElementWithHeight selectedElement, Element[] combinedElements,Value[] myValue) {
+    public static List<ElementWithHeight> findNeighbour(ElementWithHeight selectedElement, Element[] combinedElements, Value[] myValue) {
         List<ElementWithHeight> allNeighbour = new ArrayList<>();
         for (Element combinedElement : combinedElements) {
             if (isNeighbour(selectedElement.getElement(), combinedElement) &&
-                    combinedElement.id!=selectedElement.getElement().id &&(
-                    myValue[combinedElement.id].value.compareTo(selectedElement.getHeight())>0 || myValue[combinedElement.id].value.compareTo(selectedElement.getHeight())==0
-                    )
+                    combinedElement.id != selectedElement.getElement().id && (
+                    myValue[combinedElement.id].value.compareTo(selectedElement.getHeight()) > 0 || myValue[combinedElement.id].value.compareTo(selectedElement.getHeight()) == 0
+            )
             ) {
                 ElementWithHeight newCombinedElement = new ElementWithHeight();
                 newCombinedElement.setElement(combinedElement);
@@ -172,7 +175,7 @@ public class Main {
         return allNeighbour;
     }
 
-    public static boolean checkForId(ElementWithHeight iteratedElement,List<ElementWithHeight> listOfElements){
+    public static boolean checkForId(ElementWithHeight iteratedElement, List<ElementWithHeight> listOfElements) {
 
         for (ElementWithHeight listOfElement : listOfElements) {
             if (iteratedElement.getElement().id == listOfElement.getElement().id) {
@@ -183,36 +186,55 @@ public class Main {
         return false;
     }
 
-    public static boolean checkAllNeighbour(ElementWithHeight elementWithHeights,Element[] elements,Value[] myValue){
-        List<ElementWithHeight> aux = findNeighbour(elementWithHeights,elements,myValue);
-        List<ElementWithHeight> auxDouble = new ArrayList<>();
+    public static boolean checkAllNeighbour(ElementWithHeight elementWithHeights, Element[] elements, Value[] myValue) {
+
+        Deque<ElementWithHeight> buffer = new ArrayDeque<>(findNeighbour(elementWithHeights, elements, myValue));
+        Set<Integer> checkedElements=new HashSet<>();
 
 
-        for (int i = 0; i < aux.size(); i++) {
-            auxDouble = findNeighbour(aux.get(i), elements, myValue);
-            for (int j = 0; j < auxDouble.size(); j++) {
-                if (!checkForId(auxDouble.get(j), aux)) {
-                    aux.add(auxDouble.get(j));
-                }
-
-            }
-        }
-
-        for(int i=0;i<aux.size();i++){
-            if(aux.get(i).getHeight().compareTo(elementWithHeights.getHeight())>0){
+        ElementWithHeight current;
+        while ((current=buffer.poll())!=null) {
+            if(current.getHeight().compareTo(elementWithHeights.getHeight())>0){
                 return false;
             }
+
+            checkedElements.add(current.getElement().id);
+            for(var neighbour :findNeighbour(current, elements, myValue)){
+                if(!checkedElements.contains(neighbour.getElement().id)){
+                    buffer.push(neighbour);
+                }
+            }
+
         }
 
-      return true;
+//        List<ElementWithHeight> aux = findNeighbour(elementWithHeights, elements, myValue);
+//        List<ElementWithHeight> auxDouble;
+
+//        for (int i = 0; i < aux.size(); i++) {
+//            auxDouble = findNeighbour(aux.get(i), elements, myValue);
+//            for (int j = 0; j < auxDouble.size(); j++) {
+//                if (!checkForId(auxDouble.get(j), aux)) {
+//                    aux.add(auxDouble.get(j));
+//                }
+//
+//            }
+//        }
+//
+//        for(int i=0;i<aux.size();i++){
+//            if(aux.get(i).getHeight().compareTo(elementWithHeights.getHeight())>0){
+//                return false;
+//            }
+//        }
+
+        return true;
     }
 
-    public static List<ElementWithHeight> eliminateIllegalLocalMaxima(List<ElementWithHeight> elementWithHeights,Element[] elements,Value[] myValue){
+    public static List<ElementWithHeight> eliminateIllegalLocalMaxima(List<ElementWithHeight> elementWithHeights, Element[] elements, Value[] myValue) {
         List<ElementWithHeight> newElementWithHeights = new ArrayList<>();
         for (ElementWithHeight elementWithHeight : elementWithHeights) {
-         if(checkAllNeighbour(elementWithHeight, elements,myValue)){
-             newElementWithHeights.add(elementWithHeight);
-         }
+            if (checkAllNeighbour(elementWithHeight, elements, myValue)) {
+                newElementWithHeights.add(elementWithHeight);
+            }
         }
 
         return newElementWithHeights;
