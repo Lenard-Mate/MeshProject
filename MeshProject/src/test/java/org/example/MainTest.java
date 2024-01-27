@@ -2,14 +2,15 @@ package org.example;
 
 import org.example.data.Element;
 import org.example.data.ElementWithHeight;
+import org.example.data.Value;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.example.Main.isNeighbour;
-import static org.example.Main.isNeighbourInList;
+import static org.example.Main.*;
 
 
 public class MainTest {
@@ -133,61 +134,257 @@ public class MainTest {
 
     @Test
     public void writeOutputTest() {
-//
-//        String correctValue = "[\n" +
-//                "  {element_id: 0, value: 10},\n" +
-//                "  {element_id: 15, value: 10},\n" +
-//                "  {element_id: 26, value: 10}\n" +
-//                "]";
-//        Element element1 = new Element() ;
-//        element1.id = 0;
-//        element1.nodes = new int[]{0, 1, 2};
-//
-//        Element element2 = new Element() ;
-//        element1.id = 1;
-//        element1.nodes = new int[]{1, 2, 4};
-//
-//        Element element3 = new Element() ;
-//        element1.id = 2;
-//        element1.nodes = new int[]{1, 3, 4};
-//
-//        Element element4 = new Element() ;
-//        element1.id = 3;
-//        element1.nodes = new int[]{3, 4, 6};
-//
-//        Element element5 = new Element() ;
-//        element1.id = 4;
-//        element1.nodes = new int[]{5, 6, 8};
-//
-//        Element[] myElement = {element1,element2,element3,element4,element5};
-//
-//        Value value1 = new Value() ;
-//        Value value2 = new Value() ;
-//        Value value3 = new Value() ;
-//        Value value4 = new Value() ;
-//        Value value5 = new Value() ;
-//
-//        value1.element_id=0;
-//        value2.element_id=0;
-//        value3.element_id=0;
-//        value4.element_id=0;
-//
-//        BigDecimal bigDecimalNumber1 = new BigDecimal("10");
-//        BigDecimal bigDecimalNumber2 = new BigDecimal("1");
-//
-//        value1.value=bigDecimalNumber1;
-//        value2.value=bigDecimalNumber2;
-//        value3.value=bigDecimalNumber2;
-//        value4.value=bigDecimalNumber2;
-//
-//
-//        Value[] myValues = {value1,value2,value3,value4};
-//
-//        StringBuilder myResult = writeOutput(processData(myElement,myValues),3);
-//
-//        System.out.println(myResult);
-//
-//        Assertions.assertEquals(1, 1);
+
+        StringBuilder correctValue = new StringBuilder("[\r\n" +
+                "  {element_id: 0, value: 10}\r\n" +
+                "]");
+        Element element1 = new Element() ;
+        element1.id = 0;
+        element1.nodes = new int[]{0, 1, 2};
+
+        Element element2 = new Element() ;
+        element2.id = 1;
+        element2.nodes = new int[]{1, 2, 4};
+
+        Element element3 = new Element() ;
+        element3.id = 2;
+        element3.nodes = new int[]{1, 3, 4};
+
+        Element element4 = new Element() ;
+        element4.id = 3;
+        element4.nodes = new int[]{3, 4, 6};
+
+        Element element5 = new Element() ;
+        element5.id = 4;
+        element5.nodes = new int[]{5, 6, 8};
+
+        Element[] myElement = {element1,element2,element3,element4,element5};
+
+        Value value1 = new Value() ;
+        Value value2 = new Value() ;
+        Value value3 = new Value() ;
+        Value value4 = new Value() ;
+        Value value5 = new Value() ;
+
+        value1.element_id=0;
+        value2.element_id=1;
+        value3.element_id=2;
+        value4.element_id=3;
+        value5.element_id=3;
+
+        BigDecimal bigDecimalNumber1 = new BigDecimal("10");
+        BigDecimal bigDecimalNumber2 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber3 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber4 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber5 = new BigDecimal("1");
+
+        value1.value=bigDecimalNumber1;
+        value2.value=bigDecimalNumber2;
+        value3.value=bigDecimalNumber3;
+        value4.value=bigDecimalNumber4;
+        value5.value=bigDecimalNumber5;
+
+        Value[] myValues = {value1,value2,value3,value4,value5};
+
+        StringBuilder myResult = writeOutput(processData(myElement,myValues),3);
+
+        String str1 = myResult.toString();
+        String str2 = correctValue.toString();
+
+        Assertions.assertEquals(str2, str1);
+
+    }
+
+    @Test
+    public void writeOutputTest2() {
+
+        StringBuilder correctValue = new StringBuilder("[\r\n" +
+                "  {element_id: 0, value: 10},\r\n" +
+                "  {element_id: 4, value: 10}\r\n" +
+                "]");
+        Element element1 = new Element() ;
+        element1.id = 0;
+        element1.nodes = new int[]{0, 1, 2};
+
+        Element element2 = new Element() ;
+        element2.id = 1;
+        element2.nodes = new int[]{1, 2, 4};
+
+        Element element3 = new Element() ;
+        element3.id = 2;
+        element3.nodes = new int[]{1, 3, 4};
+
+        Element element4 = new Element() ;
+        element4.id = 3;
+        element4.nodes = new int[]{3, 4, 6};
+
+        Element element5 = new Element() ;
+        element5.id = 4;
+        element5.nodes = new int[]{5, 6, 8};
+
+        Element[] myElement = {element1,element2,element3,element4,element5};
+
+        Value value1 = new Value() ;
+        Value value2 = new Value() ;
+        Value value3 = new Value() ;
+        Value value4 = new Value() ;
+        Value value5 = new Value() ;
+
+        value1.element_id=0;
+        value2.element_id=1;
+        value3.element_id=2;
+        value4.element_id=3;
+        value5.element_id=3;
+
+        BigDecimal bigDecimalNumber1 = new BigDecimal("10");
+        BigDecimal bigDecimalNumber2 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber3 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber4 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber5 = new BigDecimal("10");
+
+        value1.value=bigDecimalNumber1;
+        value2.value=bigDecimalNumber2;
+        value3.value=bigDecimalNumber3;
+        value4.value=bigDecimalNumber4;
+        value5.value=bigDecimalNumber5;
+
+        Value[] myValues = {value1,value2,value3,value4,value5};
+
+        StringBuilder myResult = writeOutput(processData(myElement,myValues),3);
+
+        String str1 = myResult.toString();
+        String str2 = correctValue.toString();
+
+        Assertions.assertEquals(str2, str1);
+
+    }
+
+
+    @Test
+    public void writeOutputTest3() {
+
+        StringBuilder correctValue = new StringBuilder("[\r\n" +
+                "  {element_id: 0, value: 10},\r\n" +
+                "  {element_id: 4, value: 10}\r\n" +
+                "]");
+        Element element1 = new Element() ;
+        element1.id = 0;
+        element1.nodes = new int[]{0, 1, 2};
+
+        Element element2 = new Element() ;
+        element2.id = 1;
+        element2.nodes = new int[]{1, 2, 4};
+
+        Element element3 = new Element() ;
+        element3.id = 2;
+        element3.nodes = new int[]{1, 3, 4};
+
+        Element element4 = new Element() ;
+        element4.id = 3;
+        element4.nodes = new int[]{3, 4, 6};
+
+        Element element5 = new Element() ;
+        element5.id = 4;
+        element5.nodes = new int[]{5, 6, 8};
+
+        Element[] myElement = {element1,element2,element3,element4,element5};
+
+        Value value1 = new Value() ;
+        Value value2 = new Value() ;
+        Value value3 = new Value() ;
+        Value value4 = new Value() ;
+        Value value5 = new Value() ;
+
+        value1.element_id=0;
+        value2.element_id=1;
+        value3.element_id=2;
+        value4.element_id=3;
+        value5.element_id=3;
+
+        BigDecimal bigDecimalNumber1 = new BigDecimal("10");
+        BigDecimal bigDecimalNumber2 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber3 = new BigDecimal("-1");
+        BigDecimal bigDecimalNumber4 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber5 = new BigDecimal("10");
+
+        value1.value=bigDecimalNumber1;
+        value2.value=bigDecimalNumber2;
+        value3.value=bigDecimalNumber3;
+        value4.value=bigDecimalNumber4;
+        value5.value=bigDecimalNumber5;
+
+        Value[] myValues = {value1,value2,value3,value4,value5};
+
+        StringBuilder myResult = writeOutput(processData(myElement,myValues),3);
+
+        String str1 = myResult.toString();
+        String str2 = correctValue.toString();
+
+        Assertions.assertEquals(str2, str1);
+
+    }
+
+    @Test
+    public void writeOutputTest4() {
+
+        StringBuilder correctValue = new StringBuilder("[\r\n" +
+                "  {element_id: 3, value: 11},\r\n" +
+                "  {element_id: 0, value: 10}\r\n" +
+                "]");
+        Element element1 = new Element() ;
+        element1.id = 0;
+        element1.nodes = new int[]{1, 2, 3};
+
+        Element element2 = new Element() ;
+        element2.id = 1;
+        element2.nodes = new int[]{2, 3, 5};
+
+        Element element3 = new Element() ;
+        element3.id = 2;
+        element3.nodes = new int[]{3, 4, 5};
+
+        Element element4 = new Element() ;
+        element4.id = 3;
+        element4.nodes = new int[]{4, 5, 6};
+
+        Element element5 = new Element() ;
+        element5.id = 4;
+        element5.nodes = new int[]{6, 4, 7};
+
+        Element[] myElement = {element1,element2,element3,element4,element5};
+
+        Value value1 = new Value() ;
+        Value value2 = new Value() ;
+        Value value3 = new Value() ;
+        Value value4 = new Value() ;
+        Value value5 = new Value() ;
+
+        value1.element_id=0;
+        value2.element_id=1;
+        value3.element_id=2;
+        value4.element_id=3;
+        value5.element_id=3;
+
+        BigDecimal bigDecimalNumber1 = new BigDecimal("10");
+        BigDecimal bigDecimalNumber2 = new BigDecimal("1");
+        BigDecimal bigDecimalNumber3 = new BigDecimal("-1");
+        BigDecimal bigDecimalNumber4 = new BigDecimal("11");
+        BigDecimal bigDecimalNumber5 = new BigDecimal("10");
+
+        value1.value=bigDecimalNumber1;
+        value2.value=bigDecimalNumber2;
+        value3.value=bigDecimalNumber3;
+        value4.value=bigDecimalNumber4;
+        value5.value=bigDecimalNumber5;
+
+        Value[] myValues = {value1,value2,value3,value4,value5};
+
+        StringBuilder myResult = writeOutput(processData(myElement,myValues),3);
+
+        String str1 = myResult.toString();
+        String str2 = correctValue.toString();
+
+        Assertions.assertEquals(str2, str1);
 
     }
 

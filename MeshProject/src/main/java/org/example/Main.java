@@ -22,7 +22,6 @@ public class Main {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         try {
-
             var resource = new File(args[0]);
 
             JsonData json = objectMapper.readValue(resource, JsonData.class);
@@ -34,14 +33,13 @@ public class Main {
             writeOutput(processData(myElement, myValue), Long.parseLong(args[1]));
 
             long end = System.currentTimeMillis();
-            System.err.println(end - start + " ms");
+            System.out.println(end-start);
         } catch (IOException e) {
 
         }
 
 
     }
-
 
     public static List<ElementWithHeight> processData(Element[] elements, Value[] myValue) {
         List<Element> localMaximaArray = new ArrayList<>();
@@ -52,7 +50,6 @@ public class Main {
                 localMaximaArray.add(localMaxima);
             }
         }
-
         return eliminateIllegalLocalMaxima(sortListLocalMaxima(localMaximaArray, myValue), elements, myValue);
     }
 
@@ -65,7 +62,6 @@ public class Main {
             ) {
                 return null;
             }
-
         }
         return selectedElement;
     }
@@ -97,9 +93,7 @@ public class Main {
         }
 
         combinedElements = localMaximaListWithoutMultiplePoints(combinedElements);
-
         combinedElements.sort(Comparator.reverseOrder());
-
 
         return combinedElements;
     }
@@ -139,7 +133,6 @@ public class Main {
                 bannedList.add(combinedElements.get(i));
             }
         }
-
         return newElementWithHeights;
     }
 
@@ -175,16 +168,6 @@ public class Main {
         return allNeighbour;
     }
 
-    public static boolean checkForId(ElementWithHeight iteratedElement, List<ElementWithHeight> listOfElements) {
-
-        for (ElementWithHeight listOfElement : listOfElements) {
-            if (iteratedElement.getElement().id == listOfElement.getElement().id) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     public static boolean checkAllNeighbour(ElementWithHeight elementWithHeights, Element[] elements, Value[] myValue) {
 
@@ -206,25 +189,6 @@ public class Main {
             }
 
         }
-
-//        List<ElementWithHeight> aux = findNeighbour(elementWithHeights, elements, myValue);
-//        List<ElementWithHeight> auxDouble;
-
-//        for (int i = 0; i < aux.size(); i++) {
-//            auxDouble = findNeighbour(aux.get(i), elements, myValue);
-//            for (int j = 0; j < auxDouble.size(); j++) {
-//                if (!checkForId(auxDouble.get(j), aux)) {
-//                    aux.add(auxDouble.get(j));
-//                }
-//
-//            }
-//        }
-//
-//        for(int i=0;i<aux.size();i++){
-//            if(aux.get(i).getHeight().compareTo(elementWithHeights.getHeight())>0){
-//                return false;
-//            }
-//        }
 
         return true;
     }
