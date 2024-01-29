@@ -10,7 +10,7 @@
 > Because we do not have any element that can break the connection with a lower value than the value of ID 4, ID 4 is not a local maximum.
 > And in that case, it can't be inserted into the list. The same applies to the element with ID 2.
 
-![Nature](img.png)
+![Diagram](img.png)
 
 >Another issue was that I couldn't tell if any indirect neighbors were in the list.
 >> I could only insert one local maximum with the same value. I checked if the neighbors were already inserted but forgot about the indirect neighbors.
